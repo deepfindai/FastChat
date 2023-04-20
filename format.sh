@@ -60,7 +60,7 @@ else
    # Format only the files that changed in last commit.
    format_changed
 fi
-echo 'FastChat yapf: Done'
+echo 'FastChat Black: Done'
 
 # Run Pylint
 echo 'FastChat Pylint:'
