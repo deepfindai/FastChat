@@ -1,14 +1,4 @@
 #!/usr/bin/env bash
-# YAPF formatter, adapted from https://github.com/skypilot-org/skypilot.
-#
-# Usage:
-#    # Do work and commit your work.
-
-#    # Format files that differ from origin/main.
-#    bash format.sh
-
-#    # Commit changed files with message 'Run yapf and pylint'
-#
 
 # Cause the script to exit if a single command fails
 set -eo pipefail
@@ -18,9 +8,8 @@ builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
 ROOT="$(git rev-parse --show-toplevel)"
 builtin cd "$ROOT" || exit 1
 
-YAPF_VERSION=$(yapf --version | awk '{print $2}')
+BLACK_VERSION=$(black --version | head -n 1 | awk '{print $2}')
 PYLINT_VERSION=$(pylint --version | head -n 1 | awk '{print $2}')
-PYLINT_QUOTES_VERSION=$(pip list | grep pylint-quotes | awk '{print $2}')
 
 # # params: tool name, tool version, required version
 tool_version_check() {
@@ -30,20 +19,12 @@ tool_version_check() {
     fi
 }
 
-tool_version_check "yapf" $YAPF_VERSION "$(grep yapf requirements-dev.txt | cut -d'=' -f3)"
+tool_version_check "black" $BLACK_VERSION "$(grep black requirements-dev.txt | cut -d'=' -f3)"
 tool_version_check "pylint" $PYLINT_VERSION "$(grep "pylint==" requirements-dev.txt | cut -d'=' -f3)"
-tool_version_check "pylint-quotes" $PYLINT_QUOTES_VERSION "$(grep "pylint-quotes==" requirements-dev.txt | cut -d'=' -f3)"
-
-YAPF_FLAGS=(
-    '--recursive'
-    '--parallel'
-)
-
-YAPF_EXCLUDES=()
 
 # Format specified files
 format() {
-    yapf --in-place "${YAPF_FLAGS[@]}" "$@"
+    black "$@"
 }
 
 # Format files that differ from main branch. Ignores dirs that are not slated
@@ -58,14 +39,13 @@ format_changed() {
     MERGEBASE="$(git merge-base origin/main HEAD)"
 
     if ! git diff --diff-filter=ACM --quiet --exit-code "$MERGEBASE" -- '*.py' '*.pyi' &>/dev/null; then
-        git diff --name-only --diff-filter=ACM "$MERGEBASE" -- '*.py' '*.pyi' | xargs -P 5 \
-             yapf --in-place "${YAPF_EXCLUDES[@]}" "${YAPF_FLAGS[@]}"
+        git diff --name-only --diff-filter=ACM "$MERGEBASE" -- '*.py' '*.pyi' | xargs -P 5 black
     fi
 }
 
 # Format all files
 format_all() {
-    yapf --in-place "${YAPF_FLAGS[@]}" "${YAPF_EXCLUDES[@]}" fastchat
+    black fastchat
 }
 
 ## This flag formats individual files. --files *must* be the first command line
