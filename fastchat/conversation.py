@@ -5,6 +5,7 @@ from typing import List, Tuple, Any
 
 class SeparatorStyle(Enum):
     """Different separator style."""
+
     SINGLE = auto()
     TWO = auto()
     DOLLY = auto()
@@ -13,6 +14,7 @@ class SeparatorStyle(Enum):
 @dataclasses.dataclass
 class Conversation:
     """A class that keeps all conversation history."""
+
     system: str
     roles: List[str]
     messages: List[List[str]]
@@ -62,7 +64,7 @@ class Conversation:
 
     def to_gradio_chatbot(self):
         ret = []
-        for i, (role, msg) in enumerate(self.messages[self.offset:]):
+        for i, (role, msg) in enumerate(self.messages[self.offset :]):
             if i % 2 == 0:
                 ret.append([msg, None])
             else:
@@ -78,7 +80,8 @@ class Conversation:
             sep_style=self.sep_style,
             sep=self.sep,
             sep2=self.sep2,
-            conv_id=self.conv_id)
+            conv_id=self.conv_id,
+        )
 
     def dict(self):
         return {
@@ -94,11 +97,15 @@ class Conversation:
 
 conv_one_shot = Conversation(
     system="A chat between a curious human and an artificial intelligence assistant. "
-           "The assistant gives helpful, detailed, and polite answers to the human's questions.",
+    "The assistant gives helpful, detailed, and polite answers to the human's questions.",
     roles=("Human", "Assistant"),
     messages=(
-        ("Human", "What are the key differences between renewable and non-renewable energy sources?"),
-        ("Assistant",
+        (
+            "Human",
+            "What are the key differences between renewable and non-renewable energy sources?",
+        ),
+        (
+            "Assistant",
             "Renewable energy sources are those that can be replenished naturally in a relatively "
             "short amount of time, such as solar, wind, hydro, geothermal, and biomass. "
             "Non-renewable energy sources, on the other hand, are finite and will eventually be "
@@ -116,7 +123,8 @@ conv_one_shot = Conversation(
             "5. Flexibility: Renewable energy sources are often more flexible and can be adapted to different "
             "situations and needs, while non-renewable sources are more rigid and inflexible.\n"
             "6. Sustainability: Renewable energy sources are more sustainable over the long term, while "
-            "non-renewable sources are not, and their depletion can lead to economic and social instability.")
+            "non-renewable sources are not, and their depletion can lead to economic and social instability.",
+        ),
     ),
     offset=2,
     sep_style=SeparatorStyle.SINGLE,
@@ -126,7 +134,7 @@ conv_one_shot = Conversation(
 
 conv_vicuna_v1_1 = Conversation(
     system="A chat between a curious user and an artificial intelligence assistant. "
-           "The assistant gives helpful, detailed, and polite answers to the user's questions.",
+    "The assistant gives helpful, detailed, and polite answers to the user's questions.",
     roles=("USER", "ASSISTANT"),
     messages=(),
     offset=0,
@@ -147,9 +155,8 @@ conv_koala_v1 = Conversation(
 )
 
 conv_dolly = Conversation(
-    system=
-    "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n",
-    roles=('### Instruction', '### Response'),
+    system="Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n",
+    roles=("### Instruction", "### Response"),
     messages=(),
     offset=0,
     sep_style=SeparatorStyle.DOLLY,
