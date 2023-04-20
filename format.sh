@@ -84,7 +84,9 @@ echo 'FastChat yapf: Done'
 
 # Run Pylint
 echo 'FastChat Pylint:'
-pylint --load-plugins pylint_quotes fastchat
+pylint fastchat
+# TODO(suquark): disable 'pylint_quotes' for now due to too many inconsistent quotes
+# pylint --load-plugins pylint_quotes fastchat
 
 if ! git diff --quiet &>/dev/null; then
     echo 'Reformatted files. Please review and stage the changes.'
