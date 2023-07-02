@@ -8,12 +8,8 @@ Usage: python3 -m fastchat.data.split_long_conversation \
 """
 import argparse
 import json
-from typing import Dict, Sequence, Optional
-
 import transformers
 import tqdm
-
-from fastchat import conversation as conversation_lib
 
 
 def split_sample(sample, start_idx, end_idx):
@@ -24,11 +20,10 @@ def split_sample(sample, start_idx, end_idx):
     }
 
 
-def split_contents(content, begin, end, tokenizer, max_length):
+def split_contents(content, tokenizer, max_length):
     """
     Keep the maximum round of conversations within the max token length constraint
     """
-    content = content[begin:end]
     new_content = []
 
     for sample in tqdm.tqdm(content):
@@ -97,8 +92,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--in-file", type=str, required=True)
     parser.add_argument("--out-file", type=str, default="sharegpt_split.json")
-    parser.add_argument("--begin", type=int)
-    parser.add_argument("--end", type=int)
     parser.add_argument("--model-name-or-path", type=str, required=True)
     parser.add_argument("--max-length", type=int, default=2048)
     args = parser.parse_args()

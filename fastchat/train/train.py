@@ -112,7 +112,7 @@ def preprocess(
 
         rounds = conversation.split(conv.sep2)
         cur_len = 1
-        for i, rou in enumerate(rounds):
+        for i, rou in rounds:
             if rou == "":
                 break
 

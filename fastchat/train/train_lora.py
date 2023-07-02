@@ -128,7 +128,8 @@ def train():
     )
     tokenizer.pad_token = tokenizer.unk_token
 
-    data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
+    data_module = make_supervised_data_module(
+        tokenizer=tokenizer, data_args=data_args)
     trainer = Trainer(
         model=model, tokenizer=tokenizer, args=training_args, **data_module
     )
@@ -142,7 +143,8 @@ def train():
     trainer.save_state()
 
     # Save states. Weights might be a placeholder in zero3 and need a gather
-    state_dict = get_peft_state_maybe_zero_3(model.state_dict(), lora_args.bias)
+    state_dict = get_peft_state_maybe_zero_3(
+        model.state_dict(), lora_args.bias)
     if training_args.local_rank == 0:
         model.save_pretrained(training_args.output_dir, state_dict=state_dict)
 
